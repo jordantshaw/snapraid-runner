@@ -297,71 +297,71 @@ def run():
     if config.get("notifier"):
         config["notifier"].notify_start()
 
-    # if not os.path.isfile(config["snapraid"]["executable"]):
-    #     logging.error("The configured snapraid executable \"{}\" does not "
-    #                   "exist or is not a file".format(
-    #                       config["snapraid"]["executable"]))
-    #     finish(False)
-    # if not os.path.isfile(config["snapraid"]["config"]):
-    #     logging.error("Snapraid config does not exist at " +
-    #                   config["snapraid"]["config"])
-    #     finish(False)
+    if not os.path.isfile(config["snapraid"]["executable"]):
+        logging.error("The configured snapraid executable \"{}\" does not "
+                      "exist or is not a file".format(
+                          config["snapraid"]["executable"]))
+        finish(False)
+    if not os.path.isfile(config["snapraid"]["config"]):
+        logging.error("Snapraid config does not exist at " +
+                      config["snapraid"]["config"])
+        finish(False)
 
-    # if config["snapraid"]["touch"]:
-    #     logging.info("Running touch...")
-    #     snapraid_command("touch")
-    #     logging.info("*" * 60)
+    if config["snapraid"]["touch"]:
+        logging.info("Running touch...")
+        snapraid_command("touch")
+        logging.info("*" * 60)
 
-    # logging.info("Running diff...")
-    # diff_out = snapraid_command("diff", allow_statuscodes=[2])
-    # logging.info("*" * 60)
+    logging.info("Running diff...")
+    diff_out = snapraid_command("diff", allow_statuscodes=[2])
+    logging.info("*" * 60)
 
-    # diff_results = Counter(line.split(" ")[0] for line in diff_out)
-    # diff_results = dict((x, diff_results[x]) for x in
-    #                     ["add", "remove", "move", "update"])
-    # logging.info(("Diff results: {add} added,  {remove} removed,  " +
-    #               "{move} moved,  {update} modified").format(**diff_results))
+    diff_results = Counter(line.split(" ")[0] for line in diff_out)
+    diff_results = dict((x, diff_results[x]) for x in
+                        ["add", "remove", "move", "update"])
+    logging.info(("Diff results: {add} added,  {remove} removed,  " +
+                  "{move} moved,  {update} modified").format(**diff_results))
 
-    # if (config["snapraid"]["deletethreshold"] >= 0 and
-    #         diff_results["remove"] > config["snapraid"]["deletethreshold"]):
-    #     logging.error(
-    #         "Deleted files exceed delete threshold of {}, aborting".format(
-    #             config["snapraid"]["deletethreshold"]))
-    #     logging.error("Run again with --ignore-deletethreshold to sync anyways")
-    #     finish(False)
+    if (config["snapraid"]["deletethreshold"] >= 0 and
+            diff_results["remove"] > config["snapraid"]["deletethreshold"]):
+        logging.error(
+            "Deleted files exceed delete threshold of {}, aborting".format(
+                config["snapraid"]["deletethreshold"]))
+        logging.error("Run again with --ignore-deletethreshold to sync anyways")
+        finish(False)
 
-    # if (diff_results["remove"] + diff_results["add"] + diff_results["move"] +
-    #         diff_results["update"] == 0):
-    #     logging.info("No changes detected, no sync required")
-    # else:
-    #     logging.info("Running sync...")
-    #     try:
-    #         snapraid_command("sync")
-    #     except subprocess.CalledProcessError as e:
-    #         logging.error(e)
-    #         finish(False)
-    #     logging.info("*" * 60)
+    if (diff_results["remove"] + diff_results["add"] + diff_results["move"] +
+            diff_results["update"] == 0):
+        logging.info("No changes detected, no sync required")
+    else:
+        logging.info("Running sync...")
+        try:
+            snapraid_command("sync")
+        except subprocess.CalledProcessError as e:
+            logging.error(e)
+            finish(False)
+        logging.info("*" * 60)
 
-    # if config["scrub"]["enabled"]:
-    #     logging.info("Running scrub...")
-    #     try:
-    #         # Check if a percentage plan was given
-    #         int(config["scrub"]["plan"])
-    #     except ValueError:
-    #         scrub_args = {"plan": config["scrub"]["plan"]}
-    #     else:
-    #         scrub_args = {
-    #             "plan": config["scrub"]["plan"],
-    #             "older-than": config["scrub"]["older-than"],
-    #         }
-    #     try:
-    #         snapraid_command("scrub", scrub_args)
-    #     except subprocess.CalledProcessError as e:
-    #         logging.error(e)
-    #         finish(False)
-    #     logging.info("*" * 60)
+    if config["scrub"]["enabled"]:
+        logging.info("Running scrub...")
+        try:
+            # Check if a percentage plan was given
+            int(config["scrub"]["plan"])
+        except ValueError:
+            scrub_args = {"plan": config["scrub"]["plan"]}
+        else:
+            scrub_args = {
+                "plan": config["scrub"]["plan"],
+                "older-than": config["scrub"]["older-than"],
+            }
+        try:
+            snapraid_command("scrub", scrub_args)
+        except subprocess.CalledProcessError as e:
+            logging.error(e)
+            finish(False)
+        logging.info("*" * 60)
 
-    # logging.info("All done")
+    logging.info("All done")
     finish(True)
 
 
