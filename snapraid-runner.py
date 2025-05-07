@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import configparser
+import json
 import logging
 import logging.handlers
 import os.path
@@ -9,12 +10,12 @@ import sys
 import threading
 import time
 import traceback
-from collections import Counter, defaultdict
-from io import StringIO
-import json
-import requests
 from abc import ABC, abstractmethod
+from collections import Counter, defaultdict
 from datetime import datetime
+from io import StringIO
+
+import requests
 
 
 # Global variables
