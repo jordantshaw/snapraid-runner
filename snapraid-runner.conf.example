@@ -14,6 +14,10 @@ file = snapraid.log
 ; maximum logfile size in KiB, leave empty for infinite
 maxsize = 5000
 
+[notification]
+type = discord
+webhook_url = https://discord.com/api/webhooks/…
+
 [email]
 ; when to send an email, comma-separated list of [success, error]
 sendon = success,error
